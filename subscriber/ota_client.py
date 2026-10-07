@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 
-load_dotenv('.env')
+load_dotenv('../.env')
 
 BROKER = os.getenv('BROKER_IP')
 PORT = int(os.getenv('BROKER_PORT'))

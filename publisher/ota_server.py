@@ -3,15 +3,14 @@ from dotenv import load_dotenv
 import os
 
 
-load_dotenv('.env')
+load_dotenv('../.env')
 
 BROKER = os.getenv('BROKER_IP')
 PORT = int(os.getenv('BROKER_PORT'))
 TOPIC = os.getenv('UPDATE_TOPIC')
 
 USERNAME = os.getenv('MQTT_USERNAME')
-PASSWORD = "asdf" #os.getenv('MQTT_PASSWORD')
-
+PASSWORD = os.getenv('MQTT_PASSWORD')
 
 def publish(payload: str):
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
@@ -20,9 +19,13 @@ def publish(payload: str):
         client.connect(BROKER, PORT, 60)
     except Exception as e:
         print("Connection failed:", e)
-    client.publish(TOPIC, payload, qos=2)
-    client.disconnect()
-
+    client.loop_start()
+    try:
+        info = client.publish(TOPIC, payload, qos=2)
+        info.wait_for_publish(timeout=10)
+    finally:
+        client.disconnect()
+        client.loop_stop()
 
 while(True):
     message = input("\nEnter message:")
