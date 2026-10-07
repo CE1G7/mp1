@@ -1,6 +1,6 @@
 services:
  mqtt:
-    build: ./docker/mosquitto
+    build: ./broker
     container_name: mqtt-broker
     environment:
       MQTT_USERNAME: ${MQTT_USERNAME:?set MQTT_USERNAME in .env}
@@ -8,11 +8,10 @@ services:
     ports:
       - "1883:1883"
     volumes:
-      - ./docker/mosquitto/config:/mosquitto/config:ro
+      - ./broker/config:/mosquitto/config:ro
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
     restart: unless-stopped
-
 volumes:
   mosquitto_data:
   mosquitto_log:

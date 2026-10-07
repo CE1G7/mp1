@@ -10,7 +10,7 @@ PORT = int(os.getenv('BROKER_PORT'))
 TOPIC = os.getenv('UPDATE_TOPIC')
 
 USERNAME = os.getenv('MQTT_USERNAME')
-PASSWORD = "buh" #os.getenv('MQTT_PASSWORD')
+PASSWORD = "asdf" #os.getenv('MQTT_PASSWORD')
 
 
 def publish(payload: str):
