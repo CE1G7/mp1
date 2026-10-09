@@ -1,0 +1,10 @@
+FIRMWARE_VERSION: 1.0
+FIRMWARE_SIZE: 74
+NUM_CHUNKS: 4
+MERKLE_ROOT: b'\xf0\xd0wwLo\x8a\x92\xe8\x85"-\xa5\xfe\x9aa\xcb?\x7f\x85\xcc\xbd\x9bq\x9bu\xd1\xf2<\x99\x88\x14'
+CHUNKS: [
+C0: {INDEX: 0, FILENAME: C0},
+C1: {INDEX: 1, FILENAME: C1},
+C2: {INDEX: 2, FILENAME: C2},
+C3: {INDEX: 3, FILENAME: C3}
+]
