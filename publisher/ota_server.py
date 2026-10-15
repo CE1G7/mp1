@@ -40,9 +40,9 @@ def main():
             for i,chunk in enumerate(chunks):
                 indexed_chunks.append(bytes([i])+struct.pack("<H",round(tree.FIRMWARE_VERSION*100))+chunk)
             for c in indexed_chunks:
-                publish(c,"mp1/ota_update")
+                publish(c,"mp1/ota_update/firmware")
             manifest = tree.get_manifest()
-            publish(manifest,"mp1/ota_update")
+            publish(manifest,"mp1/ota_update/manifest")
 
         else:
             publish(message, "mp1/ota_update")
