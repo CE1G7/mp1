@@ -2,6 +2,7 @@ import threading, os, json, struct, sys
 import paho.mqtt.client as mqtt
 from dotenv import load_dotenv
 from update import Update
+from time import sleep
 
 
 load_dotenv('../.env')
@@ -38,8 +39,17 @@ def on_firmware_chunk(client, userdata, msg):
 def on_manifest(client, userdata, msg):
     update.manifest = json.loads(msg.payload)
     print(f"Update manifest received for v{update.manifest["FIRMWARE_VERSION"]}:\n{update.manifest}")
+    sleep(1)
     if update.verify():
         update.apply()
+    else:
+        for i in range(5):
+            print(f"Update verfication failed. Retrying in 30s ({i+1}/5).")
+            sleep(30)
+            if update.verify():
+                update.apply()
+                break
+
 
 
 def start_mqtt_listener():
