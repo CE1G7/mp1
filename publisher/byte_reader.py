@@ -8,7 +8,6 @@ class MerkleTree:
         self.FIRMWARE_SIZE = None
         self.NUM_CHUNKS = 4
         self.MERKLE_ROOT = None
-        self.FIRMWARE_SIZE = None
         self.CHUNKS = []
         self.LEAVES = []
         self.MANIFEST = None

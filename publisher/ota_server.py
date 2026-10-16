@@ -8,7 +8,8 @@ load_dotenv('../.env')
 
 BROKER = os.getenv('BROKER_IP')
 PORT = int(os.getenv('BROKER_PORT'))
-TOPIC = os.getenv('UPDATE_TOPIC')
+MANIFEST_TOPIC = os.getenv('MANIFEST_TOPIC')
+FIRMWARE_TOPIC = os.getenv('FIRMWARE_TOPIC')
 
 USERNAME = os.getenv('MQTT_USERNAME')
 PASSWORD = os.getenv('MQTT_PASSWORD')
@@ -34,18 +35,18 @@ def main():
         message = input("\nEnter message:")
         if(message == "exit"):
             break
-        elif(message == "firmware"):
+        elif(message == "firmware" or message == ""):
             chunks = tree.get_chunks()
             indexed_chunks = []
             for i,chunk in enumerate(chunks):
                 indexed_chunks.append(bytes([i])+struct.pack("<H",round(tree.FIRMWARE_VERSION*100))+chunk)
             for c in indexed_chunks:
-                publish(c,"mp1/ota_update/firmware")
+                publish(c, FIRMWARE_TOPIC)
             manifest = tree.get_manifest()
-            publish(manifest,"mp1/ota_update/manifest")
+            publish(manifest, MANIFEST_TOPIC)
 
         else:
-            publish(message, "mp1/ota_update")
+            publish(message, FIRMWARE_TOPIC) # for sending bogus chunks
     client.disconnect()
     client.loop_stop()
 
