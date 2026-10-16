@@ -1,1 +1,1 @@
-'''docker compose''' is required to run the broker.
+The project uses **docker compose** to run the broker on the default port. Therefore, **docker compose** needs to be installed on the host and, if present, the Mosquitto binary should be stopped to free up the port.
