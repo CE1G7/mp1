@@ -1,5 +1,18 @@
-import hashlib
-import json
+import paho.mqtt.client as mqtt
+from dotenv import load_dotenv
+import struct, hashlib, json, os
+from time import sleep
+
+
+load_dotenv('.env')
+
+BROKER = os.getenv('BROKER_IP')
+PORT = int(os.getenv('BROKER_PORT'))
+MANIFEST_TOPIC = os.getenv('MANIFEST_TOPIC')
+FIRMWARE_TOPIC = os.getenv('FIRMWARE_TOPIC')
+
+USERNAME = os.getenv('MQTT_USERNAME')
+PASSWORD = os.getenv('MQTT_PASSWORD')
 
 
 class MerkleTree:
@@ -63,3 +76,41 @@ class MerkleTree:
         return self.MANIFEST
     def get_merkle_root(self):
         return self.MERKLE_ROOT
+
+
+tree = MerkleTree()
+
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+client.username_pw_set(USERNAME, PASSWORD)
+
+
+def publish(payload: str,topic: str):
+    try:
+        info = client.publish(topic, payload, qos=2)
+        info.wait_for_publish(timeout=10)
+    except Exception as e:
+        print("connection failed", e)
+
+
+def main():
+    try:
+        client.connect(BROKER, PORT, 60)
+    except Exception as e:
+        print("Connection failed:", e)
+    client.loop_start()
+    sleep(1)
+    chunks = tree.get_chunks()
+    indexed_chunks = []
+    for i,chunk in enumerate(chunks):
+        indexed_chunks.append(bytes([i])+struct.pack("<H",round(tree.FIRMWARE_VERSION*100))+chunk)
+    for c in indexed_chunks:
+        publish(c, FIRMWARE_TOPIC)
+    manifest = tree.get_manifest()
+    publish(manifest, MANIFEST_TOPIC)
+    sleep(3)
+    client.disconnect()
+    client.loop_stop()
+
+
+if __name__ == "__main__":
+    main()
